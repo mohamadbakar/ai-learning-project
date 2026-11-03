@@ -1,0 +1,19 @@
+services:
+  app:
+    # Build the image from the current project
+    build: .
+
+     # Expose the API on all network interfaces
+    ports:
+      - target: 8000
+        published: "8000"
+        host_ip: 0.0.0.0
+        protocol: tcp
+    # Persist database and uploaded PDFs
+    volumes:
+      - ai-document-data:/app/chroma_db
+      - ai-document-uploads:/app/uploads
+
+volumes:
+  ai-document-data:
+  ai-document-uploads:

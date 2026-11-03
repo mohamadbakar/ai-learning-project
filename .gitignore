@@ -14,3 +14,7 @@ venv/
 
 # Test cache
 .pytest_cache/
+
+# Ignore local database and uploaded documents
+chroma_db/
+uploads/

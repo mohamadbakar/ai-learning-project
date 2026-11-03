@@ -62,3 +62,39 @@ def test_get_conversations():
 
     # Check that the response is a list
     assert isinstance(response.json(), list)
+
+
+# Test the document question endpoint
+@patch("main.answer_from_documents")
+@patch("main.save_conversation")
+def test_ask_document(mock_save, mock_rag):
+
+    # Mock the RAG response
+    mock_rag.return_value = {
+        "answer": "The annual salary is NOK 593,700 [Page 2].",
+        "sources": [
+            {
+                "text": "Salary as PhD: NOK 593,700 per year.",
+                "page_number": 2,
+                "distance": 0.5
+            }
+        ]
+    }
+
+    # Send a question to the document endpoint
+    response = client.post(
+        "/ask-document",
+        json={"question": "What is the annual salary?"}
+    )
+
+    # Check that the API request succeeded
+    assert response.status_code == 200
+
+    # Check that the answer contains the page citation
+    assert "[Page 2]" in response.json()["answer"]
+
+    # Check that the source page is correct
+    assert response.json()["sources"][0]["page_number"] == 2
+
+    # Check that the conversation was saved
+    mock_save.assert_called_once()
