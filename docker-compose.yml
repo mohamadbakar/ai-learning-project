@@ -6,7 +6,7 @@ services:
      # Expose the API on all network interfaces
     ports:
       - target: 8000
-        published: "8000"
+        published: "8001"
         host_ip: 0.0.0.0
         protocol: tcp
     # Persist database and uploaded PDFs

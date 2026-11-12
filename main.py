@@ -97,16 +97,19 @@ def ask_document(data: QuestionRequest):
             detail="Question cannot be empty"
         )
 
-    # Generate an answer using RAG
+       # Generate an answer using RAG
     try:
-        result = answer_from_documents(question, filename=data.filename)
-
-    except requests.exceptions.RequestException:
-        raise HTTPException(
-            status_code=502,
-            detail="Could not connect to Ollama"
+        result = answer_from_documents(
+            question,
+            filename=data.filename
         )
 
+    # Handle Ollama errors
+    except RuntimeError as error:
+        raise HTTPException(
+            status_code=502,
+            detail=str(error)
+        )
     # Save the conversation in the database
     save_conversation(question, result["answer"])
 
